@@ -1,5 +1,6 @@
-import React from 'react'
+import React, { useState } from 'react'
 import Icon from '../Icon/icon'
+import Transition from '../Transition/transition'
 import classNames from 'classnames'
 
 // 类型
@@ -16,6 +17,7 @@ export interface AlertProps {
 }
 
 const Alert: React.FC<AlertProps> = (props) => {
+  const [hide, setHide] = useState(true)
   const {
     title,
     description,
@@ -37,15 +39,22 @@ const Alert: React.FC<AlertProps> = (props) => {
     if (onClose) {
       onClose()
     }
+    setHide(false)
   }
 
   return (
     <div>
-      <div className={classes}>
-        <span className={titleClass}>{title}</span>
-        {description && <p className="viking-alert-desc">{description}</p>}
-        {closable && <span className="viking-alert-close" onClick={handleClose}><Icon icon="times"/></span>}
-      </div>
+      <Transition
+        in={hide}
+        timeout={300}
+        animation={ 'zoom-in-top' }
+      >
+        <div className={classes}>
+          <span className={titleClass}>{title}</span>
+          {description && <p className="viking-alert-desc">{description}</p>}
+          {closable && <span className="viking-alert-close" onClick={handleClose}><Icon icon="times"/></span>}
+        </div>
+      </Transition>
     </div>
   )
 }

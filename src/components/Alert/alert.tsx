@@ -5,7 +5,7 @@ import classNames from 'classnames'
 // 类型
 type AlertType = 'success' | 'default' | 'danger' | 'warning'
 
-interface AlertProps {
+export interface AlertProps {
   title: string;
   // 描述
   description?: string;
@@ -28,6 +28,7 @@ const Alert: React.FC<AlertProps> = (props) => {
   const classes = classNames('viking-alert', className, {
     [`viking-alert-${type}`]: type,
   })
+  
   const titleClass = classNames('viking-alert-title', {
     'bold-title': description
   })

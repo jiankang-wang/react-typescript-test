@@ -3,6 +3,7 @@ import Button from './components/Button/button'
 import Alert from './components/Alert/alert'
 import Menu from './components/Menu/menu'
 import MenuItem from './components/Menu/menuItem'
+import SubMeu from './components/Menu/subMenu'
 
 function App() {
   return (
@@ -43,15 +44,26 @@ function App() {
       </div>
       <div>
         <Menu>
-          <MenuItem index={ '0' }>
+          <MenuItem>
             { '首页' }
           </MenuItem>
-          <MenuItem index={ '1' }>
+          <MenuItem>
             { '精品' }
           </MenuItem>
-          <MenuItem index={ '2' }>
+          <MenuItem>
             { '轻奢' }
           </MenuItem>
+          <SubMeu title={'demo'}>
+            <MenuItem>
+              { 'drop1' }
+            </MenuItem>
+            <MenuItem>
+              { 'drop2' }
+            </MenuItem>
+            <MenuItem>
+              { 'drop3' }
+            </MenuItem>
+          </SubMeu>
         </Menu>
       </div>
     </div>

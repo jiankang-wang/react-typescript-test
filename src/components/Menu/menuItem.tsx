@@ -3,7 +3,7 @@ import classNames from 'classnames'
 import { MenuContext } from './menu'
 
 interface MenuItemProps {
-  index: string;
+  index?: string;
   disabled?: boolean;
   className?: string;
   style?: React.CSSProperties
@@ -37,4 +37,5 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
   )
 }
 
+MenuItem.displayName = 'MenuItem'
 export default MenuItem

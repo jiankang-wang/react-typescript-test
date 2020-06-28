@@ -43,7 +43,11 @@ function App() {
         <Alert type={ 'danger' } title={ 'test' } />
       </div>
       <div>
-        <Menu>
+        <Menu 
+          mode="vertical"
+          defaultIndex={ '0' }
+          defaultOpenSubMenus={ ['3'] }
+        >
           <MenuItem>
             { '首页' }
           </MenuItem>

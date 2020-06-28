@@ -17,7 +17,6 @@ const MenuItem: React.FC<MenuItemProps> = (props) => {
     style,
     children
   } = props
-  // 进行接收
   const context = useContext(MenuContext)
   const classes = classNames('menu-item', className, {
     'is-disabled': disabled,

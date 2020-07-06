@@ -125,5 +125,8 @@ describe('test Menu and MenuItem component', () => {
       expect(wrapper.getByText('drop1')).not.toBeVisible()
     })
   })
-
 })
+
+// 组件开发的流程
+  // 1: 大题的规划一下组件需要的属性
+  // 2: 编码阶段

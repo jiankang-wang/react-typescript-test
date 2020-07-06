@@ -1,11 +1,16 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import Button from './components/Button/button'
 import Alert from './components/Alert/alert'
 import Menu from './components/Menu/menu'
 import MenuItem from './components/Menu/menuItem'
 import SubMeu from './components/Menu/subMenu'
+import Input from './components/Input'
 
 function App() {
+  const [value, setValue] = useState('')
+  useEffect(() => {
+    console.log(value)
+  }, [value])
   return (
     <div className="App">
       <header className="App-header">
@@ -69,6 +74,32 @@ function App() {
             </MenuItem>
           </SubMeu>
         </Menu>
+      </div>
+      <div>
+        <Input 
+          icon="search"
+          value={value}
+          onChange={(e: React.ChangeEvent<HTMLInputElement>) => { setValue(e.target.value) }}
+          style={
+            {
+              width: '200px'
+            }
+          } 
+        />
+        <Input
+          prepend="http://"
+          style={
+            {
+              width: '200px'
+            }
+          } 
+        />
+        <Input 
+          append='.com'
+          style={{
+            width: '200px'
+          }}
+        />
       </div>
     </div>
   )

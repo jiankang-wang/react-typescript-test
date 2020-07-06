@@ -30,7 +30,7 @@ const Input: React.FC<InputProps> = props => {
     'is-disabled': disabled,
     'input-group': prepend || append,
     'input-group-append': !!append,
-    'input-group-prepend': !!prepend
+    'input-group-prepend': !!prepend 
   })
 
   // 3: 根据属性判断是否添加一些特定的节点

@@ -118,7 +118,12 @@ describe('test Menu and MenuItem component', () => {
     // 测试点击事件
     fireEvent.click(wrapper.getByText('drop1'))
     expect(testProps.onSelect).toHaveBeenCalledWith('3-0')
-
+    // 鼠标移开
+    fireEvent.mouseLeave(dropDownElement)
+    // 不显示了
+    await wait(() => {
+      expect(wrapper.getByText('drop1')).not.toBeVisible()
+    })
   })
 
 })

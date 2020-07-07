@@ -6,6 +6,12 @@ import MenuItem from './components/Menu/menuItem'
 import SubMeu from './components/Menu/subMenu'
 import Input from './components/Input'
 import AutoComplete from './components/AutoComplete'
+import AutoCompleteObject from './components/AutoComplete/autoComplete'
+
+interface DataSourceObject {
+  value: string
+}
+type DataSourceType<T = {}> = T & DataSourceObject
 
 function App() {
   const [value, setValue] = useState('')
@@ -13,8 +19,31 @@ function App() {
     console.log(value)
   }, [value])
 
+  const handlerFetchObject = (query: string) => {
+    const lakersWithNumber = [
+      {value: 'bradley', number: 11},
+      {value: 'pope', number: 1},
+      {value: 'caruso', number: 4},
+      {value: 'cook', number: 2},
+      {value: 'cousins', number: 15},
+      {value: 'james', number: 23},
+      {value: 'AD', number: 3},
+      {value: 'green', number: 14},
+      {value: 'howard', number: 39},
+      {value: 'kuzma', number: 0},
+    ]
+    return lakersWithNumber.filter(item => item.value.includes(query)) || []
+  }
+
+  const renderOptionObject = (item: DataSourceType) => {
+    return (
+      <h4>{item.value}</h4>
+    )
+  } 
+
   const handlerFetch = (query: string) => {
     let data = ['agc', 'ssk', 'yun', 'qyui', 'jsbjwjl', 'sussjslb', 'bshsi', 'chauya', 'euossh']
+
     return data.filter(item => item.includes(query)) || []
   }
 
@@ -22,10 +51,6 @@ function App() {
     return (
       <h4>{query}</h4>
     )
-  }
-
-  const handlerSelect = (item: string) => {
-    console.log(item)
   }
   
   return (
@@ -123,10 +148,18 @@ function App() {
         style={{
           width: '200px'
         }}
-        onSelect={handlerSelect}
         fetchSuggessions={handlerFetch}
         renderOption={renderOption}
       />
+      </div>
+      <div>
+        <AutoCompleteObject
+          style={{
+            width: '200px'
+          }}
+          fetchSuggessions={handlerFetchObject}
+          renderOption={renderOptionObject}
+        />
       </div>
     </div>
   )

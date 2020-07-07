@@ -18,6 +18,7 @@ interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size' > {
 interface AutoCompleteProps extends Omit<InputProps, 'onSelect'> {
   fetchSuggessions: (str: string) => string[];
   onSelect?: (item: string) => void;
+  renderOption?: (item: string) => React.ReactElement;
 }
 
 const AutoComplete: FC<AutoCompleteProps> = props => {
@@ -26,6 +27,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
       fetchSuggessions,
       onSelect,
       value,
+      renderOption,
       ...restProps
     } = props
     // state 的值
@@ -51,6 +53,11 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
         onSelect(item)
       }
     }
+
+    const renderTemplate =(item: string) => {
+      return renderOption ? renderOption(item) : item
+    }
+
     const generateDropdown = () => {
       return (
         <ul>
@@ -61,7 +68,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
                   key={index}
                   onClick={() => handlerSelect(item)}
                 >
-                  { item }
+                  { renderTemplate(item) }
                 </li>
               )
             })
@@ -74,7 +81,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
     <div className="viking-auto-complete">
       <Input
         value={inputValue}
-        onChange={() => handlerChange}
+        onChange={handlerChange}
         {...restProps}
       />
       {

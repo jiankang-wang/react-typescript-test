@@ -18,6 +18,12 @@ function App() {
     return data.filter(item => item.includes(query)) || []
   }
 
+  const renderOption = (query: string) => {
+    return (
+      <h4>{query}</h4>
+    )
+  }
+
   const handlerSelect = (item: string) => {
     console.log(item)
   }
@@ -119,6 +125,7 @@ function App() {
         }}
         onSelect={handlerSelect}
         fetchSuggessions={handlerFetch}
+        renderOption={renderOption}
       />
       </div>
     </div>

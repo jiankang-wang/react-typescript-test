@@ -5,12 +5,23 @@ import Menu from './components/Menu/menu'
 import MenuItem from './components/Menu/menuItem'
 import SubMeu from './components/Menu/subMenu'
 import Input from './components/Input'
+import AutoComplete from './components/AutoComplete'
 
 function App() {
   const [value, setValue] = useState('')
   useEffect(() => {
     console.log(value)
   }, [value])
+
+  const handlerFetch = (query: string) => {
+    let data = ['agc', 'ssk', 'yun', 'qyui', 'jsbjwjl', 'sussjslb', 'bshsi', 'chauya', 'euossh']
+    return data.filter(item => item.includes(query)) || []
+  }
+
+  const handlerSelect = (item: string) => {
+    console.log(item)
+  }
+  
   return (
     <div className="App">
       <header className="App-header">
@@ -100,6 +111,15 @@ function App() {
             width: '200px'
           }}
         />
+      </div>
+      <div>
+      <AutoComplete 
+        style={{
+          width: '200px'
+        }}
+        onSelect={handlerSelect}
+        fetchSuggessions={handlerFetch}
+      />
       </div>
     </div>
   )

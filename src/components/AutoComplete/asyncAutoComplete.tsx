@@ -1,7 +1,8 @@
-import React, { useState, FC, InputHTMLAttributes, ReactElement, ChangeEvent } from 'react'
+import React, { useState, useEffect, FC, InputHTMLAttributes, ReactElement, ChangeEvent } from 'react'
 import Input from '../Input'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import Icon from '../Icon/icon'
+import { UseDebounce } from '../../Hooks/useDebounce'
 
 type InputSize = 'lg' | 'sm'
 interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size' > {
@@ -26,6 +27,7 @@ interface AutoCompleteProps extends Omit<InputProps, 'onSelect'> {
 } 
 
 const AutoComplete: FC<AutoCompleteProps> = props => {
+
     const {
       fetchSuggessions,
       onSelect,
@@ -33,20 +35,20 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
       renderOption,
       ...restProps
     } = props
+
     // state 的值
     // 1: 初始化值 
-    const [inputValue, setInputValue] = useState(value)
+    const [inputValue, setInputValue] = useState(value as string)
     // 2: 根据初始值获取相关联的值
-    //3: 添加loading 
+    // 3: 添加loading 
     const [loading, setloading] = useState(false)
     const [suggestions, SetSuggestions] = useState< DataSourceType[]>([])
-    const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
-      setloading(true)
-      const value = e.target.value.trim()
-      setInputValue(value)
-      if(value) {
-        const result = fetchSuggessions(value)
-        // 反悔的是一个异步操作值
+    const debounceValue = UseDebounce(inputValue, 500)
+    // 4: hook监听
+    useEffect(() => {
+      if(debounceValue) {
+        const result = fetchSuggessions(debounceValue)
+        // 返回的是一个异步函数值
         if(result instanceof Promise) {
           result.then(data => {
             setloading(false)
@@ -59,6 +61,28 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
         SetSuggestions([])
         setloading(false)
       }
+    }, [ debounceValue, fetchSuggessions ])
+
+    // 事件监听
+    const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
+      setloading(true)
+      const value = e.target.value.trim()
+      setInputValue(value)
+      // if(value) {
+      //   const result = fetchSuggessions(value)
+      //   // 反悔的是一个异步操作值
+      //   if(result instanceof Promise) {
+      //     result.then(data => {
+      //       setloading(false)
+      //       SetSuggestions(data)
+      //     })
+      //   } else {
+      //     SetSuggestions(result)
+      //   }
+      // } else {
+      //   SetSuggestions([])
+      //   setloading(false)
+      // }
     }
 
     const handlerSelect = (item: DataSourceType) => {
@@ -90,7 +114,6 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
                   </li>
                 )
               })
-              
             )
           }
         </ul>
@@ -104,7 +127,6 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
         onChange={handlerChange}
         {...restProps}
       />
-
       {
         generateDropdown()
       }

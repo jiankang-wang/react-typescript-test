@@ -1,4 +1,5 @@
-import React, { useState, useEffect, FC, InputHTMLAttributes, ReactElement, ChangeEvent } from 'react'
+import React, { useState, useEffect, FC, InputHTMLAttributes, ReactElement, ChangeEvent, KeyboardEvent } from 'react'
+import classNames from 'classnames'
 import Input from '../Input'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import Icon from '../Icon/icon'
@@ -41,8 +42,10 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
     const [inputValue, setInputValue] = useState(value as string)
     // 2: 根据初始值获取相关联的值
     // 3: 添加loading 
+    // 4: 高亮显示
     const [loading, setloading] = useState(false)
     const [suggestions, SetSuggestions] = useState< DataSourceType[]>([])
+    const [highlightIndex, setHighlightIndex] = useState(-1)
     const debounceValue = UseDebounce(inputValue, 500)
     // 4: hook监听
     useEffect(() => {
@@ -61,6 +64,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
         SetSuggestions([])
         setloading(false)
       }
+      setHighlightIndex(-1)
     }, [ debounceValue, fetchSuggessions ])
 
     // 事件监听
@@ -85,6 +89,35 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
       // }
     }
 
+    const highlight = (index: number) => {
+      if (index < 0) index = 0
+      if (index >= suggestions.length) {
+        index = suggestions.length - 1
+      }
+      setHighlightIndex(index)
+    }
+    // 键盘时间
+    const handlerKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
+      switch(e.keyCode) {
+        case 13: // 回车
+          if(suggestions[highlightIndex]) {
+            handlerSelect(suggestions[highlightIndex])
+          }
+          break;
+        case 38: // 上键
+          highlight(highlightIndex - 1)
+          break;
+        case 40:// 下键
+          highlight(highlightIndex + 1)
+          break; 
+        case 27: // ESC
+          SetSuggestions([])
+          break;
+        default:
+          break;
+      }
+    }
+
     const handlerSelect = (item: DataSourceType) => {
       setInputValue(item.value)
       SetSuggestions([])
@@ -99,14 +132,18 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
 
     const generateDropdown = () => {
       return (
-        <ul>
+        <ul className="viking-suggestion-list">
           {
             loading ? (
               <Icon icon="spinner" spin/>
             ) : (
               suggestions.map((item, index) => {
+                const classes = classNames('suggestion-item', {
+                  'is-active': index === highlightIndex
+                })
                 return (
                   <li 
+                    className={ classes }
                     key={index}
                     onClick={() => handlerSelect(item)}
                   >
@@ -126,6 +163,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
         value={inputValue}
         onChange={handlerChange}
         {...restProps}
+        onKeyDown={handlerKeyDown}
       />
       {
         generateDropdown()

@@ -1,6 +1,7 @@
 import React, { useState, FC, InputHTMLAttributes, ReactElement, ChangeEvent } from 'react'
 import Input from '../Input'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
+import Icon from '../Icon/icon'
 
 type InputSize = 'lg' | 'sm'
 interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size' > {
@@ -18,7 +19,8 @@ interface DataSourceObject {
 type DataSourceType<T = {}> = T & DataSourceObject
 
 interface AutoCompleteProps extends Omit<InputProps, 'onSelect'> {
-  fetchSuggessions: (str: string) => DataSourceType[];
+  // 联合类型异步操作
+  fetchSuggessions: (str: string) => DataSourceType[] | Promise<DataSourceType[]>;
   onSelect?: (item: DataSourceType) => void;
   renderOption?: (item: DataSourceType) => React.ReactElement;
 } 
@@ -35,15 +37,27 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
     // 1: 初始化值 
     const [inputValue, setInputValue] = useState(value)
     // 2: 根据初始值获取相关联的值
+    //3: 添加loading 
+    const [loading, setloading] = useState(false)
     const [suggestions, SetSuggestions] = useState< DataSourceType[]>([])
     const handlerChange = (e: ChangeEvent<HTMLInputElement>) => {
+      setloading(true)
       const value = e.target.value.trim()
       setInputValue(value)
       if(value) {
         const result = fetchSuggessions(value)
-        SetSuggestions(result)
+        // 反悔的是一个异步操作值
+        if(result instanceof Promise) {
+          result.then(data => {
+            setloading(false)
+            SetSuggestions(data)
+          })
+        } else {
+          SetSuggestions(result)
+        }
       } else {
         SetSuggestions([])
+        setloading(false)
       }
     }
 
@@ -63,16 +77,21 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
       return (
         <ul>
           {
-            suggestions.map((item, index) => {
-              return (
-                <li 
-                  key={index}
-                  onClick={() => handlerSelect(item)}
-                >
-                  { renderTemplate(item) }
-                </li>
-              )
-            })
+            loading ? (
+              <Icon icon="spinner" spin/>
+            ) : (
+              suggestions.map((item, index) => {
+                return (
+                  <li 
+                    key={index}
+                    onClick={() => handlerSelect(item)}
+                  >
+                    { renderTemplate(item) }
+                  </li>
+                )
+              })
+              
+            )
           }
         </ul>
       )
@@ -85,6 +104,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
         onChange={handlerChange}
         {...restProps}
       />
+
       {
         generateDropdown()
       }

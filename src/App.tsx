@@ -7,6 +7,7 @@ import SubMeu from './components/Menu/subMenu'
 import Input from './components/Input'
 import AutoComplete from './components/AutoComplete'
 import AutoCompleteObject from './components/AutoComplete/autoComplete'
+import AsynAutoCompleteObject from './components/AutoComplete/asyncAutoComplete'
 
 interface DataSourceObject {
   value: string
@@ -18,6 +19,14 @@ function App() {
   useEffect(() => {
     console.log(value)
   }, [value])
+
+  const handlerAsynFetchobject = (query: string) => {
+    return fetch(`https://api.github.com/search/users?q=${query}`)
+      .then(res => res.json())
+      .then(({ items }) => {
+        return items.slice(0, 10).map((item: any) => ({ value: item.login, ...item}))
+      })
+  }
 
   const handlerFetchObject = (query: string) => {
     const lakersWithNumber = [
@@ -158,6 +167,15 @@ function App() {
             width: '200px'
           }}
           fetchSuggessions={handlerFetchObject}
+          renderOption={renderOptionObject}
+        />
+      </div>
+      <div>
+        <AsynAutoCompleteObject
+          style={{
+            width: '200px'
+          }}
+          fetchSuggessions={handlerAsynFetchobject}
           renderOption={renderOptionObject}
         />
       </div>

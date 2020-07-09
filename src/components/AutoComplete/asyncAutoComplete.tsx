@@ -1,9 +1,10 @@
-import React, { useState, useEffect, FC, InputHTMLAttributes, ReactElement, ChangeEvent, KeyboardEvent } from 'react'
+import React, { useState, useEffect, useRef, FC, InputHTMLAttributes, ReactElement, ChangeEvent, KeyboardEvent } from 'react'
 import classNames from 'classnames'
 import Input from '../Input'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import Icon from '../Icon/icon'
 import { UseDebounce } from '../../Hooks/useDebounce'
+import { UseClickOutside } from '../../Hooks/useClickOutside'
 
 type InputSize = 'lg' | 'sm'
 interface InputProps extends Omit<InputHTMLAttributes<HTMLElement>, 'size' > {
@@ -42,16 +43,19 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
     const [inputValue, setInputValue] = useState(value as string)
     // 2: 根据初始值获取相关联的值
     // 3: 添加loading 
-    // 4: 高亮显示
+    // 4: 高亮显示依据条件索引
+    // 5: 点击空白处保证下拉收回
     const [loading, setloading] = useState(false)
     const [suggestions, SetSuggestions] = useState< DataSourceType[]>([])
     const [highlightIndex, setHighlightIndex] = useState(-1)
+    const triggerSearch = useRef(false)
+    const componentRef = useRef<HTMLDivElement>(null)
     const debounceValue = UseDebounce(inputValue, 500)
+    UseClickOutside(componentRef, () => SetSuggestions([]))
     // 4: hook监听
     useEffect(() => {
-      if(debounceValue) {
+      if(debounceValue && triggerSearch.current) {
         const result = fetchSuggessions(debounceValue)
-        // 返回的是一个异步函数值
         if(result instanceof Promise) {
           result.then(data => {
             setloading(false)
@@ -72,6 +76,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
       setloading(true)
       const value = e.target.value.trim()
       setInputValue(value)
+      triggerSearch.current = true
       // if(value) {
       //   const result = fetchSuggessions(value)
       //   // 反悔的是一个异步操作值
@@ -124,6 +129,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
       if (onSelect) {
         onSelect(item)
       }
+      triggerSearch.current = false
     }
 
     const renderTemplate =(item: DataSourceType) => {
@@ -158,7 +164,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
     }
 
   return (
-    <div className="viking-auto-complete">
+    <div className="viking-auto-complete" ref={componentRef}>
       <Input
         value={inputValue}
         onChange={handlerChange}
@@ -173,4 +179,7 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
 }
 
 export default AutoComplete
+
+// useRef 可以用来存一个状态， 并且进行状态之间的一个切换 .current 拿到值
+// useRef 也可以用来绑定dom元素， 并且进行监听dom元素， 来处理一些业务需求
 

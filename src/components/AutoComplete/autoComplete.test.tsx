@@ -89,9 +89,13 @@ describe('test Aitocomplete complete', () => {
       expect(secondResult).toHaveClass('is-active')
     
     // up
-      fireEvent.keyDown(inputNode, {keyCoede: 38 })
+      fireEvent.keyDown(inputNode, {keyCode: 38 })
       expect(firstResult).toHaveClass('is-active')
 
+    // enter 
+      fireEvent.keyDown(inputNode, { keyCode: 13 })
+      expect(testProps.onSelect).toHaveBeenCalledWith({value: 'ab', number: 11})
+      expect(wrapper.queryByText('ab')).not.toBeInTheDocument()
   })
 
   it('click outside should hide the dropdown', () => {

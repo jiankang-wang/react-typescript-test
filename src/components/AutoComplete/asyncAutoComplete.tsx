@@ -77,21 +77,6 @@ const AutoComplete: FC<AutoCompleteProps> = props => {
       const value = e.target.value.trim()
       setInputValue(value)
       triggerSearch.current = true
-      // if(value) {
-      //   const result = fetchSuggessions(value)
-      //   // 反悔的是一个异步操作值
-      //   if(result instanceof Promise) {
-      //     result.then(data => {
-      //       setloading(false)
-      //       SetSuggestions(data)
-      //     })
-      //   } else {
-      //     SetSuggestions(result)
-      //   }
-      // } else {
-      //   SetSuggestions([])
-      //   setloading(false)
-      // }
     }
 
     const highlight = (index: number) => {

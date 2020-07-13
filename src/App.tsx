@@ -93,6 +93,24 @@ function App() {
       <h4>{query}</h4>
     )
   }
+
+  // 基本上传文件的流程
+  const handlerChangeUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
+    console.log(e.target.files)
+    const files = e.target.files
+    if (files) {
+      const currentFile = files[0]
+      const formData = new FormData()
+      formData.append(currentFile.name, currentFile)
+      axios.post('https://jsonplaceholder.typicode.com/posts', formData,{
+        headers: {
+          'Content-type': 'multipart/form-data'
+        }
+      }).then(res => {
+        console.log(res.data)
+      })
+    }
+  }
   
   return (
     <div className="App">
@@ -213,6 +231,13 @@ function App() {
       </div>
       <div>
         <span>{ title }</span>
+        <h5>基本上传</h5>
+          <input 
+            type="file"
+            name="upload-file"
+            multiple
+            onChange={handlerChangeUpload}
+          />
       </div>
     </div>
   )

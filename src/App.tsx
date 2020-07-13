@@ -8,6 +8,8 @@ import Input from './components/Input'
 import AutoComplete from './components/AutoComplete'
 import AutoCompleteObject from './components/AutoComplete/autoComplete'
 import AsynAutoCompleteObject from './components/AutoComplete/asyncAutoComplete'
+// 测试axios
+import axios from 'axios'
 
 interface DataSourceObject {
   value: string
@@ -16,6 +18,36 @@ type DataSourceType<T = {}> = T & DataSourceObject
 
 function App() {
   const [value, setValue] = useState('')
+  // 测试axios
+  const [title, setTitle] = useState('')
+
+  // get请求(get请求第二个参数是进行配置型的)
+  // useEffect(() => {
+  //   axios.get('https://jsonplaceholder.typicode.com/posts/1', {
+  //     // 必要时添加或者全局配置
+  //     headers: {
+  //       "Content-type": "application/json; charset=UTF-8"
+  //     } 
+  //   })
+  //     .then(({ data: { title } }) => {
+  //       setTitle(title)
+  //     })
+  // })
+  
+  //post请求(post请求第二个参数是实际的参数， 第三个参数才是配置项)
+    useEffect(() => {
+      axios.post('https://jsonplaceholder.typicode.com/posts', {
+        id: 1,
+        title: '测试axios'
+      }, {
+        headers: {
+          "Content-type": "application/json; charset=UTF-8"
+        } 
+      }).then(({ data: { title } }) => {
+        setTitle(title)
+      })
+    }, [])
+
   useEffect(() => {
     console.log(value)
   }, [value])
@@ -178,6 +210,9 @@ function App() {
           fetchSuggessions={handlerAsynFetchobject}
           renderOption={renderOptionObject}
         />
+      </div>
+      <div>
+        <span>{ title }</span>
       </div>
     </div>
   )

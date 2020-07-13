@@ -8,6 +8,7 @@ import Input from './components/Input'
 import AutoComplete from './components/AutoComplete'
 import AutoCompleteObject from './components/AutoComplete/autoComplete'
 import AsynAutoCompleteObject from './components/AutoComplete/asyncAutoComplete'
+import Upload from './components/Upload/upload'
 // 测试axios
 import axios from 'axios'
 
@@ -238,6 +239,12 @@ function App() {
             multiple
             onChange={handlerChangeUpload}
           />
+      </div>
+      <div>
+        <span>test upload</span>
+        <Upload
+          action = { 'https://jsonplaceholder.typicode.com/posts' }
+        />
       </div>
     </div>
   )

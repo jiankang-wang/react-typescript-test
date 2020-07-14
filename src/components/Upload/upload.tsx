@@ -1,6 +1,7 @@
 import React, { useRef, useState } from 'react'
 import axios from 'axios'
 import Button from '../Button/button'
+import UploadList from './uploadList'
 
 type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error'
 // 文件的信息
@@ -18,11 +19,13 @@ interface UploadFile {
 // 文件上传的事件信息
 interface uploadPros {
   action: string;
-  onProgress?: (percentage: number, file: File) => void; // 过程
-  onSuccess?: (data: any, file: File) => void; // 成功
-  onError?: (err: any, file: File) => void; // 失败
-  beforeUpload?: (file: File) => boolean | Promise<File>; // 上传之前
-  onChange?: (file: File) => void // 文件改变
+  onProgress?: (percentage: number, file: File) => void;
+  onSuccess?: (data: any, file: File) => void;
+  onError?: (err: any, file: File) => void;
+  beforeUpload?: (file: File) => boolean | Promise<File>;
+  onChange?: (file: File) => void;
+  onRemove?: (file: UploadFile) => void;
+  defaultFileList?: UploadFile[];
 }
 
 const Upload: React.FC<uploadPros> = (props) => {
@@ -33,11 +36,14 @@ const Upload: React.FC<uploadPros> = (props) => {
     onSuccess,
     onError,
     beforeUpload,
-    onChange
+    onChange,
+    onRemove,
+    defaultFileList
   } = props
 
   const fileInput = useRef<HTMLInputElement>(null)
-  const [fileList, setFileList] = useState<UploadFile []>([])
+  const [fileList, setFileList] = useState<UploadFile []>(defaultFileList || [])
+
   const updateFileList = (updateFile: UploadFile, updateObj: Partial<UploadFile>) => {
     setFileList(prevList => {
       return prevList.map(file => {
@@ -68,7 +74,7 @@ const Upload: React.FC<uploadPros> = (props) => {
   const uploadFiles = (files: FileList) => {
     const postFiles = Array.from(files)
     postFiles.forEach(file => {
-      // beforeUpload 提交之前进行判断
+      // beforeUpload
       if (!beforeUpload) {
         post(file)
       } else { // 返回两个值 布尔值或者promise
@@ -131,6 +137,16 @@ const Upload: React.FC<uploadPros> = (props) => {
       } 
     })
   }
+
+  const handleRemove = (file: UploadFile) => {
+    setFileList((prevList) => {
+      return prevList.filter(item => item.uid !== file.uid)
+    })
+    if (onRemove) {
+      onRemove(file)
+    }
+  }
+
   return (
     <div className='viking-upload-component'>
       <Button onClick={handlerClick} btnType='primary'>fileIputTest</Button>
@@ -142,6 +158,10 @@ const Upload: React.FC<uploadPros> = (props) => {
           onChange={handlerChange}
         />
       </div>
+      <UploadList 
+        fileList={fileList}
+        onRemove={handleRemove}
+      />
     </div>
   )
 }

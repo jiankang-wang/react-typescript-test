@@ -4,11 +4,11 @@ import Button from '../Button/button'
 
 interface uploadPros {
   action: string;
-  onProgress?: (percentage: number, file: File) => void;
-  onSuccess?: (data: any, file: File) => void;
-  onError?: (err: any, file: File) => void;
-  beforeUpload?: (file: File) => boolean | Promise<File>;
-  onChange?: (file: File) => void
+  onProgress?: (percentage: number, file: File) => void; // 过程
+  onSuccess?: (data: any, file: File) => void; // 成功
+  onError?: (err: any, file: File) => void; // 失败
+  beforeUpload?: (file: File) => boolean | Promise<File>; // 上传之前
+  onChange?: (file: File) => void // 文件改变
 }
 
 const Upload: React.FC<uploadPros> = (props) => {

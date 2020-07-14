@@ -112,6 +112,23 @@ function App() {
       })
     }
   }
+
+  // 检查文件 beforeUpload
+  // 1: 文件大小
+  // const checkFileSize = (file: File) => {
+  //   if (Math.floor(file.size)/ 1024 > 50) {
+  //     alert('file size big')
+  //     return false
+  //   }
+  //   return true
+  // }
+  
+  // 2: filePromise 文件(修改文件的命名)
+  const filePromise = (file: File) => {
+    const newFile = new File([file], 'repeat-name', { type: file.type })
+    return Promise.resolve(newFile)
+  }
+    
   
   return (
     <div className="App">
@@ -243,6 +260,7 @@ function App() {
       <div>
         <span>test upload</span>
         <Upload
+          beforeUpload={ filePromise }
           action = { 'https://jsonplaceholder.typicode.com/posts' }
         />
       </div>

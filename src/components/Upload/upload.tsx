@@ -7,6 +7,8 @@ interface uploadPros {
   onProgress?: (percentage: number, file: File) => void;
   onSuccess?: (data: any, file: File) => void;
   onError?: (err: any, file: File) => void;
+  beforeUpload?: (file: File) => boolean | Promise<File>;
+  onChange?: (file: File) => void
 }
 
 const Upload: React.FC<uploadPros> = (props) => {
@@ -15,7 +17,9 @@ const Upload: React.FC<uploadPros> = (props) => {
     action,
     onProgress,
     onSuccess,
-    onError
+    onError,
+    beforeUpload,
+    onChange
   } = props
 
   const fileInput = useRef<HTMLInputElement>(null)
@@ -41,7 +45,19 @@ const Upload: React.FC<uploadPros> = (props) => {
     // 2: 进行遍历
     postFiles.forEach(file => {
       // 3: 数据请求
-      post(file)
+      // 4: beforeUpload 提交之前进行判断
+      if (!beforeUpload) {
+        post(file)
+      } else { // 返回两个值 布尔值或者promise
+        const result = beforeUpload(file)
+        if (result && result instanceof Promise) {
+          result.then(processedFile => {
+            post(processedFile)
+          })
+        } else if (result !== false) {
+          post(file)
+        }
+      }
     })
   }
 
@@ -52,7 +68,7 @@ const Upload: React.FC<uploadPros> = (props) => {
       headers: {
         'Content-Type': 'multipart/form-data'
       },
-      onUploadProgress: (e) => {
+      onUploadProgress: (e) => { // 过程
         let percentage = Math.round((e.loaded * 100) / e.total) || 0
         if (onProgress) {
           onProgress(percentage, file)
@@ -62,10 +78,16 @@ const Upload: React.FC<uploadPros> = (props) => {
       if (onSuccess) {
         onSuccess(res.data, file)
       }
+      if (onChange) {
+        onChange(file)
+      }
     }).catch(err => {
       if(onError) {
         onError(err, file)
       }
+      if (onChange) {
+        onChange(file)
+      } 
     })
   }
 

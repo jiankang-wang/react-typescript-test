@@ -91,6 +91,7 @@ const Upload: React.FC<uploadPros> = (props) => {
   }
 
   const post = (file: File) => {
+    // 添加文件属性
     let _file: UploadFile = {
       uid: new Date() + 'upload-file',
       size: file.size,
@@ -118,7 +119,7 @@ const Upload: React.FC<uploadPros> = (props) => {
             onProgress(percentage, file)
           }
         }
-        }
+      }
     }).then(res => {
       updateFileList(_file, { status: 'success', response: res.data })
       if (onSuccess) {
@@ -150,18 +151,21 @@ const Upload: React.FC<uploadPros> = (props) => {
   return (
     <div className='viking-upload-component'>
       <Button onClick={handlerClick} btnType='primary'>fileIputTest</Button>
-      <div className='viking-upload-inpu'>
+      <div  className='viking-upload-input'>
         <input 
+          style={{ width: '80px' }}
           type="file"
           multiple
           className="viking-file-input"
           onChange={handlerChange}
         />
       </div>
-      <UploadList 
-        fileList={fileList}
-        onRemove={handleRemove}
-      />
+      <div>
+        <UploadList 
+          fileList={fileList}
+          onRemove={handleRemove}
+        />
+      </div>
     </div>
   )
 }

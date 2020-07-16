@@ -19,7 +19,6 @@ interface UploadListProps {
   onRemove: (file: UploadFile) => void;
 }
 
-
 const UploadList: React.FC<UploadListProps> = (props) => {
   const {
     fileList,

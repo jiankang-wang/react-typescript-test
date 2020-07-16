@@ -125,8 +125,9 @@ function App() {
   
   // 2: filePromise 文件(修改文件的命名)
   const filePromise = (file: File) => {
-    const newFile = new File([file], 'repeat-name', { type: file.type })
-    return Promise.resolve(newFile)
+    // const newFile = new File([file], 'repeat-name', { type: file.type })
+    // return Promise.resolve(newFile)
+    return Promise.resolve(file)
   }
     
   
@@ -262,6 +263,15 @@ function App() {
         <Upload
           beforeUpload={ filePromise }
           action = { 'https://jsonplaceholder.typicode.com/posts' }
+          multiple = { true }
+          withCredentials= { true }
+          headers={{
+            'X-power-by': 'wjk'
+          }}
+          data={{
+            key: 'value'
+          }}
+          accept={ '.jpg'}
         />
       </div>
     </div>

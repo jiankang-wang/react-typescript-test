@@ -26,6 +26,13 @@ interface uploadPros {
   onChange?: (file: File) => void;
   onRemove?: (file: UploadFile) => void;
   defaultFileList?: UploadFile[];
+  // 增强属性
+  headers?: { [key: string]: any };
+  name?: string;
+  data?: { [key: string]: any };
+  withCredentials?: boolean;
+  multiple?: boolean;
+  accept?: string;
 }
 
 const Upload: React.FC<uploadPros> = (props) => {
@@ -38,7 +45,13 @@ const Upload: React.FC<uploadPros> = (props) => {
     beforeUpload,
     onChange,
     onRemove,
-    defaultFileList
+    defaultFileList,
+    headers,
+    name,
+    data,
+    withCredentials,
+    multiple,
+    accept,
   } = props
 
   const fileInput = useRef<HTMLInputElement>(null)
@@ -93,7 +106,7 @@ const Upload: React.FC<uploadPros> = (props) => {
   const post = (file: File) => {
     // 添加文件属性
     let _file: UploadFile = {
-      uid: new Date() + 'upload-file',
+      uid: new Date() + 'upload-file' + file.name,
       size: file.size,
       name: file.name,
       raw: file,
@@ -104,13 +117,21 @@ const Upload: React.FC<uploadPros> = (props) => {
     setFileList(prevList => {
       return [_file, ...prevList]
     })
+    console.log(_file)
 
     const formData = new FormData()
-    formData.append(file.name, file)
+    formData.append(name || file.name, file)
+    if (data) {
+      Object.keys(data).forEach(key => {
+        formData.append(key, data[key])
+      })
+    }
     axios.post(action, formData, {
       headers: {
+        ...headers,
         'Content-Type': 'multipart/form-data'
       },
+      withCredentials, // 允许携带cookies
       onUploadProgress: (e) => {
         let percentage = Math.round((e.loaded * 100) / e.total) || 0
         if (percentage <= 100) {
@@ -155,9 +176,10 @@ const Upload: React.FC<uploadPros> = (props) => {
         <input 
           style={{ width: '80px' }}
           type="file"
-          multiple
+          multiple={ multiple }
           className="viking-file-input"
           onChange={handlerChange}
+          accept={ accept }
         />
       </div>
       <div>
@@ -168,6 +190,10 @@ const Upload: React.FC<uploadPros> = (props) => {
       </div>
     </div>
   )
+}
+
+Upload.defaultProps = {
+  name: 'file'
 }
 
 export default Upload

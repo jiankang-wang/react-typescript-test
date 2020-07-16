@@ -1,10 +1,10 @@
 import React, { useRef, useState } from 'react'
 import axios from 'axios'
-import Button from '../Button/button'
 import UploadList from './uploadList'
+import Dragger from './dragger'
 
 type UploadFileStatus = 'ready' | 'uploading' | 'success' | 'error'
-// 文件的信息
+// single file information
 interface UploadFile {
   uid: string;
   size?: number;
@@ -16,7 +16,6 @@ interface UploadFile {
   error?: any;
 }
 
-// 文件上传的事件信息
 interface uploadPros {
   action: string;
   onProgress?: (percentage: number, file: File) => void;
@@ -26,13 +25,14 @@ interface uploadPros {
   onChange?: (file: File) => void;
   onRemove?: (file: UploadFile) => void;
   defaultFileList?: UploadFile[];
-  // 增强属性
+  // enhanced attributes
   headers?: { [key: string]: any };
   name?: string;
   data?: { [key: string]: any };
   withCredentials?: boolean;
   multiple?: boolean;
   accept?: string;
+  drag?: boolean
 }
 
 const Upload: React.FC<uploadPros> = (props) => {
@@ -52,6 +52,7 @@ const Upload: React.FC<uploadPros> = (props) => {
     withCredentials,
     multiple,
     accept,
+    drag
   } = props
 
   const fileInput = useRef<HTMLInputElement>(null)
@@ -87,10 +88,9 @@ const Upload: React.FC<uploadPros> = (props) => {
   const uploadFiles = (files: FileList) => {
     const postFiles = Array.from(files)
     postFiles.forEach(file => {
-      // beforeUpload
       if (!beforeUpload) {
         post(file)
-      } else { // 返回两个值 布尔值或者promise
+      } else {
         const result = beforeUpload(file)
         if (result && result instanceof Promise) {
           result.then(processedFile => {
@@ -104,7 +104,6 @@ const Upload: React.FC<uploadPros> = (props) => {
   }
 
   const post = (file: File) => {
-    // 添加文件属性
     let _file: UploadFile = {
       uid: new Date() + 'upload-file' + file.name,
       size: file.size,
@@ -117,8 +116,7 @@ const Upload: React.FC<uploadPros> = (props) => {
     setFileList(prevList => {
       return [_file, ...prevList]
     })
-    console.log(_file)
-
+    
     const formData = new FormData()
     formData.append(name || file.name, file)
     if (data) {
@@ -131,7 +129,7 @@ const Upload: React.FC<uploadPros> = (props) => {
         ...headers,
         'Content-Type': 'multipart/form-data'
       },
-      withCredentials, // 允许携带cookies
+      withCredentials,
       onUploadProgress: (e) => {
         let percentage = Math.round((e.loaded * 100) / e.total) || 0
         if (percentage <= 100) {
@@ -171,21 +169,32 @@ const Upload: React.FC<uploadPros> = (props) => {
 
   return (
     <div className='viking-upload-component'>
-      <Button onClick={handlerClick} btnType='primary'>fileIputTest</Button>
-      <div  className='viking-upload-input'>
-        <input 
-          style={{ width: '80px' }}
-          type="file"
-          multiple={ multiple }
-          className="viking-file-input"
-          onChange={handlerChange}
-          accept={ accept }
-        />
+      <div 
+        className='viking-upload-input'
+        onClick={handlerClick}
+      >
+        {
+          drag ? (
+            <Dragger
+              onFile={files => uploadFiles(files) }
+            >
+            </Dragger>
+          ) : (
+            <input 
+              style={{ width: '80px' }}
+              type="file"
+              multiple={ multiple }
+              className="viking-file-input"
+              onChange={ handlerChange }
+              accept={ accept }
+            />
+          )
+        }
       </div>
       <div>
         <UploadList 
-          fileList={fileList}
-          onRemove={handleRemove}
+          fileList={ fileList }
+          onRemove={ handleRemove }
         />
       </div>
     </div>

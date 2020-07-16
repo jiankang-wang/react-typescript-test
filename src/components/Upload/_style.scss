@@ -13,6 +13,7 @@
   width: 360px;
   height: 180px;
   text-align: center;
+  background: url('./upload.png') no-repeat center center;
   &:hover {
     border: 1px dashed $primary;
   }

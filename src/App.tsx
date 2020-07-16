@@ -125,6 +125,7 @@ function App() {
   
   // 2: filePromise 文件(修改文件的命名)
   const filePromise = (file: File) => {
+    // 修改文件名
     // const newFile = new File([file], 'repeat-name', { type: file.type })
     // return Promise.resolve(newFile)
     return Promise.resolve(file)
@@ -266,12 +267,13 @@ function App() {
           multiple = { true }
           withCredentials= { true }
           headers={{
-            'X-power-by': 'wjk'
+            'X-power-enhancer': 'wjk-demo'
           }}
           data={{
             key: 'value'
           }}
           accept={ '.jpg'}
+          drag= { true }
         />
       </div>
     </div>

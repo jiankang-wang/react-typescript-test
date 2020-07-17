@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, FC, InputHTMLAttributes, ReactElement, ChangeEvent, KeyboardEvent } from 'react'
 import classNames from 'classnames'
-import Input from '../Input'
+import Input from '../Input/input'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 import Icon from '../Icon/icon'
 import { UseDebounce } from '../../Hooks/useDebounce'

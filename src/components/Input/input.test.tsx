@@ -1,6 +1,6 @@
 import React, { InputHTMLAttributes, ChangeEvent } from 'react'
 import { render, fireEvent } from '@testing-library/react'
-import  Input from './index'
+import  Input from './input'
 import { IconProp } from '@fortawesome/fontawesome-svg-core'
 
 type InputSize = 'lg' | 'sm'

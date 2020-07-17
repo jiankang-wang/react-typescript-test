@@ -1,0 +1,19 @@
+{
+  "compilerOptions": {
+    "outDir": "dist", // 表示打包输出文件路径
+    "module": "esnext", // 表示采用ES6的模块进行打包 
+    "target": "es5", // 编译
+    "declaration": true,
+    "jsx": "react",
+    "moduleResolution":"Node",
+    "allowSyntheticDefaultImports": true,
+  },
+  "include": [
+    "src"
+  ],
+  "exclude": [ // 这些文件不在进行打包，跳过
+    "src/**/*.test.tsx",
+    "src/**/*.stories.tsx",
+    "src/setupTests.ts",
+  ]
+}

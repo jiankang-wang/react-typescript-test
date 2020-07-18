@@ -15,6 +15,8 @@ export { default as Transition } from './components/Transition';
 export { default as Upload } from './components/Upload';
 export { default as Menu } from './components/Menu';
 // 倒入入口文件end
+// 软链接 A项目 npm link
+//  切换到上层目录 找到B项目  npm link 进行软链接
 library.add(fas);
 ReactDOM.render(
 // <React.StrictMode>

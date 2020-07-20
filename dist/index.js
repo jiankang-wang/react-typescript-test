@@ -16,7 +16,7 @@ export { default as Upload } from './components/Upload';
 export { default as Menu } from './components/Menu';
 // 倒入入口文件end
 // 软链接 A项目 npm link
-//  切换到上层目录 找到B项目  npm link 进行软链接
+//  切换到上层目录 找到B项目  npm link A项目的名字 进行软链接就可以使用导出的控件组件了（注意react版本的一致性以及icon图标库的引用）
 library.add(fas);
 ReactDOM.render(
 // <React.StrictMode>

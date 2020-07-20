@@ -43,7 +43,7 @@
     "eject": "react-scripts eject",
     "build-ts": "tsc -p tsconfig.build.json",
     "build-css": "node-sass ./src/styles/index.scss ./dist/index.css",
-    "publish": "yarn lint && yarn build"
+    "prepublishOnly": "yarn lint && yarn build"
   },
   "husky": {
     "hooks": {

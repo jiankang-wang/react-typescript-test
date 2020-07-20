@@ -51,9 +51,9 @@ const testFile = new File(['xyz'], 'test.png', {type: 'image/png'})
 
 describe('test upload component', () => {
 
-  beforeEach(() => {
-    wrapper = render(<Upload {...testProps}>Click to upload</Upload>)
-  })
+  // beforeEach(() => {
+  //   wrapper = render(<Upload {...testProps}>Click to upload</Upload>)
+  // })
 
 })
 
